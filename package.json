@@ -1,0 +1,27 @@
+{
+  "name": "portfolio-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsnd --respawn --clear ./src/app.ts",
+    "build": "rimraf ./dist && tsc",
+    "start": "npm run build && node ./dist/app.js",
+    "migrate": "npx prisma migrate dev --name init"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "6.0.0",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "prisma": "^6.0.0",
+    "rimraf": "^6.0.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  }
+}
