@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { ExperienceController } from "./controller";
+import { AuthMiddleware } from "../../middlewares/auth.middleware";
+
 
 
 export class ExperienceRoutes {
@@ -9,6 +11,9 @@ export class ExperienceRoutes {
 
         const router = Router()
         router.get('/', controller.getExperience)
+        router.post('/', AuthMiddleware.validateJWT, controller.createExperience)
+        router.put('/', AuthMiddleware.validateJWT, controller.updateExperience)
+        router.delete('/', AuthMiddleware.validateJWT, controller.deleteExperience)
 
         return router
     }
