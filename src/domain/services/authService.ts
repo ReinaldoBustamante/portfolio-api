@@ -15,8 +15,9 @@ export class AuthService {
 
     public async registerUser(registerUserDto: RegisterUserDto) {
 
-        const user = await this.getUserByEmail(registerUserDto.email)
-        if (user) throw CustomError.conflict('Usuario ya existe')
+        const users = await prisma.user.findMany()
+        if(users.length >= 1) throw CustomError.conflict('no se pueden agregar mas usuarios')
+
 
         const hashedPassword = await BcryptAdapter.hashPassword(registerUserDto!.password, 10)
         const { password, ...userEntity } = await prisma.user.create({

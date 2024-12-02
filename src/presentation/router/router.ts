@@ -2,6 +2,7 @@ import { Router } from "express";
 import { UserRoutes } from "./user/routes";
 import { ExperienceRoutes } from "./experience/routes";
 import { AuthRoutes } from "./auth/routes";
+import { ProjectRoutes } from "./project/routes";
 
 export class ServerRoutes {
     
@@ -10,6 +11,7 @@ export class ServerRoutes {
         router.use('/auth', AuthRoutes.router())
         router.use('/user', UserRoutes.router())
         router.use('/experience', ExperienceRoutes.router())
+        router.use('/project', ProjectRoutes.router())
 
         return router
     }
