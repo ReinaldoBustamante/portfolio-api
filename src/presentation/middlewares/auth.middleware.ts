@@ -12,7 +12,7 @@ export class AuthMiddleware {
             if (method !== 'Bearer') throw CustomError.badRequest('Method not valid (bearer required)')
 
             const payload = await JwtAdapter.decoded(token) as JwtPayload
-            req.body.user = payload.id
+            req.body.userId = payload.id
             next()
 
         } catch (error) {

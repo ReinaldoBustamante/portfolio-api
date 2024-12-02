@@ -21,4 +21,27 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime ?
   deleted_at DateTime ?
+  experience Experience[]
+  project Project[]
+}
+
+model Experience {
+  id Int @id @default(autoincrement())
+  company_name String
+  occupation String
+  init_date DateTime
+  end_date DateTime
+  description String
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model Project {
+  id Int @id @default(autoincrement())
+  title String
+  description String
+  repository_url String
+  demo_url String
+  user_id Int
+  user User @relation(fields: [user_id], references: [id])
 }
