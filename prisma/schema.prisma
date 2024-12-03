@@ -45,3 +45,16 @@ model Project {
   user_id Int
   user User @relation(fields: [user_id], references: [id])
 }
+
+model Technology {
+  id Int @id @default(autoincrement())
+  name String
+}
+
+model Project_technology {
+  id Int @id @default(autoincrement())
+}
+
+model Experience_technology {
+  id Int @id @default(autoincrement())
+}

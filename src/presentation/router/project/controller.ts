@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { ProjectService } from '../../../domain/services/projectService'
 import { CreateProjectDto } from '../../../domain/dtos/projects/createProjectDto'
 import { CustomError } from '../../../domain/errors/customError'
+import { UpdateProjectDto } from '../../../domain/dtos/projects/updateProjectDto'
 
 export class ProjectController {
 
@@ -35,11 +36,20 @@ export class ProjectController {
     }
 
     public updateProject = async (req: Request, res: Response) => {
+        const [error, updateProjectDto] = UpdateProjectDto.create(req.body)
+        const projectId = +req.params.id
         try {
-            const resp = await this.projectService.updateProject()
+            if (error) throw CustomError.badRequest(error)
+            if (isNaN(projectId)) throw CustomError.badRequest('id must be a number')
+            const resp = await this.projectService.updateProject(updateProjectDto!, req.body.userId, projectId)
             res.json(resp)
         } catch (error) {
-            console.log(error)
+            if(error instanceof CustomError){
+                res.status(error.statusCode).json({error: error.msg})
+            } else {
+                console.log(error)
+                res.status(500).json({error: 'Internal server error'})
+            }
         }
     }
 
