@@ -13,48 +13,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id Int @id @default(1) @unique
-  email String @unique
-  password String
-  created_at DateTime @default(now())
-  updated_at DateTime ?
-  deleted_at DateTime ?
+  id         Int          @id @unique @default(1)
+  email      String       @unique
+  password   String
+  created_at DateTime     @default(now())
+  updated_at DateTime?
+  deleted_at DateTime?
   experience Experience[]
-  project Project[]
+  project    Project[]
 }
 
 model Experience {
-  id Int @id @default(autoincrement())
-  company_name String
-  occupation String
-  init_date DateTime
-  end_date DateTime
-  description String
-  user_id Int
-  user User @relation(fields: [user_id], references: [id])
+  id                    Int                     @id @default(autoincrement())
+  company_name          String
+  occupation            String
+  init_date             DateTime
+  end_date              DateTime
+  description           String
+  user_id               Int
+  user                  User                    @relation(fields: [user_id], references: [id])
+  experience_technology Experience_technology[]
 }
 
 model Project {
-  id Int @id @default(autoincrement())
-  title String
-  description String
-  repository_url String
-  demo_url String
-  user_id Int
-  user User @relation(fields: [user_id], references: [id])
+  id                 Int                  @id @default(autoincrement())
+  title              String
+  description        String
+  repository_url     String
+  demo_url           String
+  user_id            Int
+  user               User                 @relation(fields: [user_id], references: [id])
+  project_technology Project_technology[]
 }
 
 model Technology {
-  id Int @id @default(autoincrement())
-  name String
+  id                    Int                     @id @default(autoincrement())
+  name                  String @unique
+  project_technology    Project_technology[]
+  experience_technology Experience_technology[]
 }
 
 model Project_technology {
-  id Int @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
+  project_id    Int
+  technology_id Int
+  project       Project    @relation(fields: [project_id], references: [id])
+  technology    Technology @relation(fields: [technology_id], references: [id])
 }
 
 model Experience_technology {
-  id Int @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
+  experience_id Int
+  technology_id Int
+  experience    Experience @relation(fields: [experience_id], references: [id])
+  technology    Technology @relation(fields: [technology_id], references: [id])
 }
