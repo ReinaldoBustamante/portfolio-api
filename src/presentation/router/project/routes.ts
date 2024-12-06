@@ -12,6 +12,7 @@ export class ProjectRoutes {
 
         router.get('/', projectController.getProjects)
         router.post('/', AuthMiddleware.validateJWT, projectController.createProject)
+        router.post('/:projectId/technology', AuthMiddleware.validateJWT, projectController.addTechnology)
         router.put('/:id', AuthMiddleware.validateJWT, projectController.updateProject)
         router.delete('/:id', AuthMiddleware.validateJWT, projectController.deleteProject)
 

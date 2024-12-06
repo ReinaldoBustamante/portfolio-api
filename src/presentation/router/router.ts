@@ -4,6 +4,7 @@ import { ExperienceRoutes } from "./experience/routes";
 import { AuthRoutes } from "./auth/routes";
 import { ProjectRoutes } from "./project/routes";
 import { TechnologyRoutes } from "./technology/routes";
+import { UploadRoutes } from "./upload/routes";
 
 export class ServerRoutes {
     
@@ -14,6 +15,8 @@ export class ServerRoutes {
         router.use('/experience', ExperienceRoutes.router())
         router.use('/project', ProjectRoutes.router())
         router.use('/technology', TechnologyRoutes.router())
+        router.use('/upload', UploadRoutes.router())
+        
         return router
     }
 }

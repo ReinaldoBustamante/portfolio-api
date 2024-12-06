@@ -1,4 +1,5 @@
 import { prisma } from "../../config/db/connection"
+import { AddTechnologyDto } from "../dtos/projects/addTechnology"
 import { CreateProjectDto } from "../dtos/projects/createProjectDto"
 import { UpdateProjectDto } from "../dtos/projects/updateProjectDto"
 import { CustomError } from "../errors/customError"
@@ -6,7 +7,15 @@ import { CustomError } from "../errors/customError"
 export class ProjectService {
 
     public async getAllProjects() {
-        const project = await prisma.project.findMany()
+        const project = await prisma.project.findMany({
+            include: {
+                project_technology: {
+                    select: {
+                        technology: true
+                    }
+                }
+            }
+        })
         return project
     }
 
@@ -18,6 +27,26 @@ export class ProjectService {
             }
         })
         return project
+    }
+
+    public async addTech(addTechnologyDto: AddTechnologyDto, projectId: number) {
+        const existingRelation = await prisma.project_technology.findUnique({
+            where: {
+                project_id_technology_id: {
+                    project_id: projectId,
+                    technology_id: addTechnologyDto.id
+                }
+            }
+        });
+        if (existingRelation) throw CustomError.conflict('Esta relación ya existe');
+
+        const technologyProjects = await prisma.project_technology.create({
+            data: {
+                project_id: projectId,
+                technology_id: addTechnologyDto.id
+            }
+        })
+        return technologyProjects
     }
 
     public async updateProject(updateProjectDto: UpdateProjectDto, userId: number, projectId: number) {

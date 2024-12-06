@@ -41,6 +41,7 @@ model Project {
   title              String
   description        String
   repository_url     String
+  img_url            String
   demo_url           String
   user_id            Int
   user               User                 @relation(fields: [user_id], references: [id])
@@ -49,23 +50,23 @@ model Project {
 
 model Technology {
   id                    Int                     @id @default(autoincrement())
-  name                  String @unique
+  name                  String                  @unique
   project_technology    Project_technology[]
   experience_technology Experience_technology[]
 }
 
 model Project_technology {
-  id            Int        @id @default(autoincrement())
   project_id    Int
   technology_id Int
   project       Project    @relation(fields: [project_id], references: [id])
   technology    Technology @relation(fields: [technology_id], references: [id])
+  @@id([project_id, technology_id])
 }
 
 model Experience_technology {
-  id            Int        @id @default(autoincrement())
   experience_id Int
   technology_id Int
   experience    Experience @relation(fields: [experience_id], references: [id])
   technology    Technology @relation(fields: [technology_id], references: [id])
+  @@id([experience_id, technology_id])
 }
