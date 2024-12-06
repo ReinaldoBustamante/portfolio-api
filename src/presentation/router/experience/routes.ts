@@ -14,6 +14,7 @@ export class ExperienceRoutes {
         const router = Router()
         router.get('/', controller.getExperience)
         router.post('/', AuthMiddleware.validateJWT, controller.createExperience)
+        router.post('/:experienceId/technology', AuthMiddleware.validateJWT, controller.addTechnology)
         router.put('/:id', AuthMiddleware.validateJWT, controller.updateExperience)
         router.delete('/:id', AuthMiddleware.validateJWT, controller.deleteExperience)
 

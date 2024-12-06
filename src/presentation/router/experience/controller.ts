@@ -3,6 +3,7 @@ import { ExperienceService } from '../../../domain/services/experienceService'
 import { CreateExperienceDto } from '../../../domain/dtos/experience/createExperience.dto'
 import { CustomError } from '../../../domain/errors/customError'
 import { UpdateExperienceDto } from '../../../domain/dtos/experience/updateExperience.dto.'
+import { AddTechnologyDto } from '../../../domain/dtos/projects/addTechnology'
 
 export class ExperienceController {
     constructor(
@@ -28,6 +29,25 @@ export class ExperienceController {
         } catch (error) {
             if (error instanceof CustomError) {
                 res.status(error.statusCode).json({ error: error.msg });
+            } else {
+                console.log(error)
+                res.status(500).json({ error: 'Internal server error' })
+            }
+        }
+    }
+
+    public addTechnology = async (req: Request, res: Response) => {
+        const experienceId = +req.params.experienceId
+        const [error, addTechnologyDto] = AddTechnologyDto.create(req.body)
+
+        try {
+            if (isNaN(experienceId)) throw CustomError.badRequest('id must be a number')
+            if (error) throw CustomError.badRequest(error)
+            const resp = await this.experienceService.addTech(addTechnologyDto!, experienceId)
+            res.status(201).json(resp)
+        } catch (error) {
+            if (error instanceof CustomError) {
+                res.status(error.statusCode).json({ error: error.msg })
             } else {
                 console.log(error)
                 res.status(500).json({ error: 'Internal server error' })

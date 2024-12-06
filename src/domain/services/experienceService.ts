@@ -1,6 +1,7 @@
 import { prisma } from "../../config/db/connection";
 import { CreateExperienceDto } from "../dtos/experience/createExperience.dto";
 import { UpdateExperienceDto } from "../dtos/experience/updateExperience.dto.";
+import { AddTechnologyDto } from "../dtos/projects/addTechnology";
 import { CustomError } from "../errors/customError";
 
 export class ExperienceService {
@@ -19,6 +20,39 @@ export class ExperienceService {
         })
         return experience
     }
+
+    public async addTech(addTechnologyDto: AddTechnologyDto, experienceId: number) {
+        const experience = await prisma.experience.findUnique({
+            where: { id: experienceId },
+            include: { technologies: true }  // Incluye las tecnologías asociadas al proyecto
+        });
+
+        // Si la experiencia no existe
+        if (!experience) {
+            throw CustomError.notFound('Proyecto no encontrado');
+        }
+
+        const technologyExists = experience.technologies.some(
+            (tech) => tech.id === addTechnologyDto.id
+        );
+
+        if (technologyExists) {
+            throw CustomError.conflict('Esta tecnología ya está asociada a la experiencia');
+        }
+
+        const updatedExperience = await prisma.experience.update({
+            where: { id: experienceId },
+            include: {technologies: true},
+            data: {
+                technologies: {
+                    connect: { id: addTechnologyDto.id }  // Conecta la tecnología al proyecto
+                }
+            }
+        });
+
+        return updatedExperience;
+    }
+
 
     public async updateExperience(updateExperience: UpdateExperienceDto, experienceId: number, userId: number) {
         const experience = await prisma.experience.findUnique({
