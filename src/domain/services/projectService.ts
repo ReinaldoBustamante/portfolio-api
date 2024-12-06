@@ -9,11 +9,7 @@ export class ProjectService {
     public async getAllProjects() {
         const project = await prisma.project.findMany({
             include: {
-                project_technology: {
-                    select: {
-                        technology: true
-                    }
-                }
+                technologies: true
             }
         })
         return project
@@ -30,23 +26,35 @@ export class ProjectService {
     }
 
     public async addTech(addTechnologyDto: AddTechnologyDto, projectId: number) {
-        const existingRelation = await prisma.project_technology.findUnique({
-            where: {
-                project_id_technology_id: {
-                    project_id: projectId,
-                    technology_id: addTechnologyDto.id
+        const project = await prisma.project.findUnique({
+            where: { id: projectId },
+            include: { technologies: true }  // Incluye las tecnologías asociadas al proyecto
+        });
+
+        // Si el proyecto no existe
+        if (!project) {
+            throw CustomError.notFound('Proyecto no encontrado');
+        }
+
+        const technologyExists = project.technologies.some(
+            (tech) => tech.id === addTechnologyDto.id
+        );
+
+        if (technologyExists) {
+            throw CustomError.conflict('Esta tecnología ya está asociada al proyecto');
+        }
+
+        const updatedProject = await prisma.project.update({
+            where: { id: projectId },
+            include: {technologies: true},
+            data: {
+                technologies: {
+                    connect: { id: addTechnologyDto.id }  // Conecta la tecnología al proyecto
                 }
             }
         });
-        if (existingRelation) throw CustomError.conflict('Esta relación ya existe');
 
-        const technologyProjects = await prisma.project_technology.create({
-            data: {
-                project_id: projectId,
-                technology_id: addTechnologyDto.id
-            }
-        })
-        return technologyProjects
+        return updatedProject;
     }
 
     public async updateProject(updateProjectDto: UpdateProjectDto, userId: number, projectId: number) {
