@@ -7,7 +7,11 @@ import { CustomError } from "../errors/customError";
 export class ExperienceService {
 
     public async getExperience() {
-        const experiences = await prisma.experience.findMany()
+        const experiences = await prisma.experience.findMany({
+            include: {
+                technologies: true
+            }
+        })
         return experiences
     }
 
