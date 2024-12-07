@@ -1,5 +1,5 @@
 import express, { Router } from 'express'
-import { ServerRoutes } from './router/router'
+import cors from 'cors'
 
 
 interface ServerProps {
@@ -22,7 +22,7 @@ export class ServerApp {
 
         //middleware
         app.use(express.json())
-
+        app.use(cors())
 
         //endpoint
         app.use('/api', this.routes)
